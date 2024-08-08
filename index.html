@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArkSite</title>
+    <script>
+        function redirectToMobile() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    var isMobile = /android|ipad|iphone|ipod|windows phone|blackberry|iemobile|opera mini/i.test(userAgent);
+
+    // Ensure it's not a desktop device or web app
+    if (isMobile && !/ipad/i.test(userAgent)) {
+        window.location.href = "https://ben-stro.github.io/ArkSite/mobile_index.html"; // URL of mobile version
+            }
+        }
+
+        // Run the function when the page loads
+        window.onload = redirectToMobile;
+    </script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #222121;
+            color: lightgrey;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        footer {
+            background-color: #4c4848;
+            padding: 10px;
+            text-align: center;
+            height: auto;
+            width: 100%;
+            border-top: 1px solid #ccc;
+            position: relative; /* Changed from static to relative */
+            bottom: 0;
+        }
+        .container {
+            display: flex;
+            gap: 20px; /* Space between the boxes */
+        }
+        .checkbox-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #4c4848;
+            text-align: left;
+            width: 300px; /* Adjust as needed */
+            margin: 0; /* Remove any default margin */
+        }
+        .checkbox-container input[type="checkbox"] {
+            margin: 10px;
+        }
+        .checkbox-container h2 {
+            margin: 0; /* Remove default margin */
+            margin-bottom: 10px; /* Add space below the header */
+        }
+        .right-container {
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            gap: 20px; /* Space between the boxes */
+        }
+        .additional-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #4c4848;
+            text-align: left;
+            width: 450px; /* Adjust as needed */
+            margin: 0; /* Remove any default margin */
+        }
+        .additional-box h2 {
+            margin: 0; /* Remove default margin */
+        }
+        .additional-box #result {
+            margin-top: 20px;
+            font-size: 18px;
+            white-space: pre-line;
+        }
+        .conversion-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #4c4848;
+            text-align: left;
+            width: 300px; /* Adjust as needed */
+            margin: 0; /* Remove any default margin */
+        }
+        .conversion-box h2 {
+            margin: 0; /* Remove header margin */
+        }
+        .conversion-box #conv-result {
+            margin-top: 20px;
+            font-size: 18px;
+            white-space: pre-line;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center the content vertically */
+            align-items: center; /* Center the content horizontally */
+        }
+        .notfooter {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Select Orundum Sources to Calculate.</h1>
+        <div class="container">
+            <!-- Checkbox container -->
+            <div class="checkbox-container">
+                <h2>Free Orundum</h2>
+                <div>
+                    <input type="checkbox" id="checkbox1" value="100">
+                    <label for="checkbox1">Daily Mission (100)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="checkbox2" value="71.4285714285714">
+                    <label for="checkbox2">Weekly Mission (500)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="checkbox3" value="257.142857142857">
+                    <label for="checkbox3">Annihilation (1800/Week)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="checkbox4" value="100">
+                    <label for="checkbox4">Green Cert Shop (5 Tickets/Month)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="checkbox8" value="20">
+                    <label for="checkbox8">Green Cert Shop (600/Month)</label>
+                </div>
+                <br><br>
+                <h2>Paid Orundum</h2>
+                <div>
+                    <input type="checkbox" id="checkbox5" value="200">
+                    <label for="checkbox5">Monthly Card (200/Day)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="checkbox6" value="452">
+                    <label for="checkbox6">Monthly Headhunting Pack (6000 + 7560 in O.P.* Monthly)</label>
+                </div>
+                <br><br>
+                <h2>Bonus Orundum</h2>
+                <div>
+                    <input type="checkbox" id="checkbox7" value="65.75342465753425">
+                    <label for="checkbox7">Limited Banner Orundum (estimated 6,000/banner)</label>
+                </div>
+            </div>
+
+            <!-- Right Container for Calculation and Conversion Boxes -->
+            <div class="right-container">
+                <!-- Calculation Box -->
+                <div class="additional-box">
+                    <h2>Calculation:</h2>
+                    <div id="result">(ERR-CALC)Select sources to see totals</div>
+                </div>
+
+                <!-- Conversion Box -->
+                <div class="conversion-box">
+                    <h2>Conversion (Pulls):</h2>
+                    <div id="conv-result">(ERR-CONV)Select sources to see totals</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateResult() {
+            // Get all checkboxes
+            const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
+            
+            // Initialize totals
+            let dailytotal = 0;
+            let weeklytotal = 0;
+            let monthlytotal = 0;
+            let annualtotal = 0;
+            let CNtoENtotal = 0;
+            // Loop through checkboxes to add checked values
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    dailytotal += parseFloat(checkbox.value) || 0; // Ensure value is a number
+                }
+            });
+
+            // Calculate totals
+            weeklytotal = dailytotal * 7;
+            monthlytotal = dailytotal * 30;
+            annualtotal = dailytotal * 360;
+            CNtoENtotal = dailytotal * 180;
+
+            // Convert totals
+            dailyconv = dailytotal / 600
+            weeklyconv = weeklytotal / 600
+            monthlyconv = monthlytotal / 600
+            annualconv = annualtotal / 600
+            sixmoconv = CNtoENtotal / 600
+
+            // Round two decimal places (hundredth)
+            const roundeddailytotal = dailytotal.toFixed(2);
+            const roundedweeklytotal = weeklytotal.toFixed(2);
+            const roundedmonthlytotal = monthlytotal.toFixed(2);
+            const roundedannualtotal = annualtotal.toFixed(2);
+            const roundedCNtoENtotal = CNtoENtotal.toFixed(2);
+
+            // Round Conversions
+
+            const roundeddailyconv = dailyconv.toFixed(2);
+            const roundedweeklyconv = weeklyconv.toFixed(2);
+            const roundedmonthlyconv = monthlyconv.toFixed(2);
+            const roundedannualconv = annualconv.toFixed(2);
+            const roundedsixmoconv = sixmoconv.toFixed(2);
+
+            // Display the result
+            document.getElementById('result').textContent = `Daily Orundum: ${roundeddailytotal}\n\nWeekly Orundum: ${roundedweeklytotal}\n\nMonthly Orundum (30 Days): ${roundedmonthlytotal}\n\nAnnual Orundum (360 Days): ${roundedannualtotal}\n\nCN to Global Time (6 Months) Orundum: ${roundedCNtoENtotal}`;
+           // Display Conversions
+            document.getElementById('conv-result').textContent = `1 Day: ${roundeddailyconv}\n\n7 Days: ${roundedweeklyconv}\n\n30 Days: ${roundedmonthlyconv}\n\n360 Days: ${roundedannualconv}\n\n6 Months:${roundedsixmoconv}`
+        }
+
+        // Attach event listeners to checkboxes
+        document.querySelectorAll('.checkbox-container input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateResult);
+        });
+
+        // Initial call to update result
+        updateResult();
+    </script>
+<div class ="notfooter">
+    <p>Note: Values for calculations and conversions are displayed with only two decimal places. These are calculated with further decimals, but are only displayed as being smaller.<br>Values are calculated as daily averages. and may vary depending on already claimed rewards for specific time periods.
+
+    </p>
+    <p><br><br>FUTURE UPDATE PLANS: Adding Annihilation milestone selector, adding custom day count, adding automatic calendar calculation.</p>
+</div>
+    <footer>Currently Using Version 1.4</footer>
+</body>
+</html>
